@@ -1,0 +1,72 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "material.icons"
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+        useIR = true
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+//        kotlinCompilerVersion '1.5.31'
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation "androidx.compose.ui:ui:1.2.0-alpha01"
+    implementation "androidx.compose.material:material:1.2.0-alpha01"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.2.0-alpha01"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+    implementation 'androidx.activity:activity-compose:1.4.0'
+
+    implementation "androidx.compose.material3:material3:1.0.0-alpha03"
+    implementation "androidx.compose.material:material-icons-extended:1.2.0-alpha01"
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
+
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+}
