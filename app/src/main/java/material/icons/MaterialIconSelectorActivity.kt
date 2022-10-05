@@ -37,7 +37,7 @@ import material.icons.ui.theme.MaterialIconsTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<MaterialIconSelectorViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")

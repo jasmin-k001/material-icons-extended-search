@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Field
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MaterialIconSelectorViewModel(application: Application) : AndroidViewModel(application) {
 
     val iconStyles = listOf(Icons.Filled, Icons.Outlined, Icons.Rounded, Icons.Sharp, Icons.TwoTone)
 
@@ -55,9 +55,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private suspend fun queryIcons(iconName: String?, iconsStyle: Any): List<ImageVector> =
         withContext(Dispatchers.IO) {
-            val context = getApplication<App>()
             val icons = ArrayList<ImageVector>()
-
+            val context = getApplication() as Context
             val classes = getDexFiles(context)
                 .flatMap { it.entries().asSequence() }
                 .filter { it.startsWith("androidx.compose.material.icons.${iconsStyle.javaClass.simpleName.lowercase()}") }
@@ -102,6 +101,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     companion object {
-        val TAG = MainViewModel::class.simpleName
+        val TAG = MaterialIconSelectorViewModel::class.simpleName
     }
 }
