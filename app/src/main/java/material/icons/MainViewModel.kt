@@ -22,16 +22,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val query: StateFlow<String?> = _query
 
     private val _filters = MutableStateFlow(iconStyles[0])
-    val filters: StateFlow<Any> = _filters
+    private val filters: StateFlow<Any> = _filters
 
     private val _isLoading = MutableStateFlow(true)
-    val isLoading: StateFlow<Boolean> = _isLoading
 
     val icons: StateFlow<List<ImageVector>> = query
         .combine(filters) { query, filters ->
             getIcons(query, filters)
         }
-        .stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = ArrayList())
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = ArrayList()
+        )
 
     fun search(query: String?) {
         Log.d(TAG, "search query=$query")
@@ -50,30 +53,32 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return icons
     }
 
-    private suspend fun queryIcons(iconName: String?, iconsStyle: Any): List<ImageVector> = withContext(Dispatchers.IO) {
-        val context = getApplication<App>()
-        val icons = ArrayList<ImageVector>()
+    private suspend fun queryIcons(iconName: String?, iconsStyle: Any): List<ImageVector> =
+        withContext(Dispatchers.IO) {
+            val context = getApplication<App>()
+            val icons = ArrayList<ImageVector>()
 
-        val classes = getDexFiles(context)
-            .flatMap { it.entries().asSequence() }
-            .filter { it.startsWith("androidx.compose.material.icons.${iconsStyle.javaClass.simpleName.lowercase()}") }
-            .map { context.classLoader.loadClass(it) }
+            val classes = getDexFiles(context)
+                .flatMap { it.entries().asSequence() }
+                .filter { it.startsWith("androidx.compose.material.icons.${iconsStyle.javaClass.simpleName.lowercase()}") }
+                .map { context.classLoader.loadClass(it) }
 
-        for (cls in classes) {
-//            val fields = cls.declaredFields
-            val methods = cls.declaredMethods
-            val getfun = methods.first()
-//            Log.d(TAG, "cls: ${cls.name} methods=${methods.map { it.name }}")
+            for (cls in classes) {
+                val methods = cls.declaredMethods
+                val getFun = methods.first()
 
-            val image = getfun.invoke(null, iconsStyle)
-//            Log.d(TAG, "isImage=${image is ImageVector}; iconsStyle=${iconsStyle.javaClass.simpleName}")
+                val image = getFun.invoke(null, iconsStyle)
 
-            if (image is ImageVector && (iconName.isNullOrEmpty() || image.name.contains(iconName, true)))
-                icons.add(image)
+                if (image is ImageVector && (iconName.isNullOrEmpty() || image.name.contains(
+                        iconName,
+                        true
+                    ))
+                )
+                    icons.add(image)
+            }
+
+            icons
         }
-
-        icons
-    }
 
     @Suppress("UNCHECKED_CAST")
     private fun getDexFiles(context: Context): Sequence<DexFile> {

@@ -7,9 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
@@ -71,7 +71,7 @@ fun IconsList(
     searchFilters: List<Any>,
     onFilter: (Any) -> Unit
 ) {
-    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -94,7 +94,7 @@ fun IconsList(
             LazyVerticalGrid(
                 modifier = Modifier.padding(7.dp, 0.dp),
                 contentPadding = innerPadding,
-                cells = GridCells.Adaptive(123.dp),
+                columns = GridCells.Adaptive(123.dp),
                 verticalArrangement = Arrangement.spacedBy(9.dp),
                 horizontalArrangement = Arrangement.spacedBy(9.dp)
             ) {
@@ -176,7 +176,9 @@ fun FiltersMenu(
 fun GridItem(icon: ImageVector) {
     Card(backgroundColor = MaterialTheme.colorScheme.surfaceVariant) {
         Column(
-            modifier = Modifier.height(99.dp).padding(5.dp),
+            modifier = Modifier
+                .height(99.dp)
+                .padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
