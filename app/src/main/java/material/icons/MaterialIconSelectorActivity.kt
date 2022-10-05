@@ -1,11 +1,12 @@
 package material.icons
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -15,10 +16,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.FilterList
 import androidx.compose.material.icons.twotone.Search
-import androidx.compose.material.icons.twotone.Wifi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,11 +32,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import material.icons.ui.theme.MaterialIconsTheme
 
-class MainActivity : ComponentActivity() {
+class MaterialIconSelectorActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MaterialIconSelectorViewModel>()
 
@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
             val searchFilters = viewModel.iconStyles
 
             MaterialIconsTheme {
-                IconsList(icons, query, viewModel::search, searchFilters, viewModel::filter)
+                IconsList(icons, query, viewModel::search, searchFilters, viewModel::filter, this)
             }
         }
     }
@@ -60,8 +60,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class
+    ExperimentalMaterial3Api::class
 )
 @Composable
 fun IconsList(
@@ -69,7 +68,8 @@ fun IconsList(
     query: String?,
     onSearch: (String?) -> Unit,
     searchFilters: List<Any>,
-    onFilter: (Any) -> Unit
+    onFilter: (Any) -> Unit,
+    activity: Activity
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -99,7 +99,7 @@ fun IconsList(
                 horizontalArrangement = Arrangement.spacedBy(9.dp)
             ) {
                 items(listOfIcons) {
-                    GridItem(it)
+                    GridItem(it, activity)
                 }
             }
         }
@@ -172,15 +172,22 @@ fun FiltersMenu(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun GridItem(icon: ImageVector) {
-    Card(backgroundColor = MaterialTheme.colorScheme.surfaceVariant) {
+fun GridItem(icon: ImageVector, activity: Activity) {
+    Card(backgroundColor = MaterialTheme.colorScheme.surfaceVariant, onClick = {
+        activity.intent
+        val intent = Intent()
+        intent.putExtra("icon", icon.name)
+        activity.setResult(Activity.RESULT_OK, intent)
+        activity.finish()
+    }) {
         Column(
             modifier = Modifier
                 .height(99.dp)
                 .padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             var multiplier by remember { mutableStateOf(1f) }
             val iconName = icon.name.replaceBefore(".", "").replace(".", "")
@@ -206,13 +213,5 @@ fun GridItem(icon: ImageVector) {
                 }
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MaterialIconsTheme {
-        IconsList(listOf(Icons.TwoTone.Wifi), "", {}, listOf(), {})
     }
 }
