@@ -12,4 +12,4 @@
 /gradlew.bat
 .externalNativeBuild
 /gradle/
-!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/
