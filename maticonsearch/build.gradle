@@ -73,7 +73,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'io.github.husseinfo'
                 artifactId = 'maticonsearch'
-                version = '1.0'
+                version = '1.0.0'
             }
         }
     }
