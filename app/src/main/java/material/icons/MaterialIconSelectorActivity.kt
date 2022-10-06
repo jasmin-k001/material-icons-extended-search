@@ -3,7 +3,6 @@ package material.icons
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -40,7 +39,6 @@ class MaterialIconSelectorActivity : ComponentActivity() {
     private val viewModel by viewModels<MaterialIconSelectorViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -52,10 +50,6 @@ class MaterialIconSelectorActivity : ComponentActivity() {
                 IconsList(icons, query, viewModel::search, searchFilters, viewModel::filter, this)
             }
         }
-    }
-
-    companion object {
-        val TAG = MainActivity::class.simpleName
     }
 }
 
