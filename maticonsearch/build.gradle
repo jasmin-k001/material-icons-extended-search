@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -36,6 +37,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
@@ -56,4 +63,18 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.20"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'io.github.husseinfo'
+                artifactId = 'maticonsearch'
+                version = '1.0'
+            }
+        }
+    }
 }
