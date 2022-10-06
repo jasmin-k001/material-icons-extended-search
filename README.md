@@ -1,8 +1,7 @@
+[![](https://jitci.com/gh/Husseinfo/material-icons-extended-search/svg)](https://jitci.com/gh/Husseinfo/material-icons-extended-search)
 # Material Icons Extended Search
 A simple Android app, written using Jetpack Compose, that shows and lets you search all icons from androidx.compose.material:material-icons-extended
 
-### Install
-Download the APK from [here](/app/release/app-release.apk) or compile the project yourself.
 
 </br>
 <p align="center">
