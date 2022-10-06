@@ -55,6 +55,8 @@ class MaterialIconSelectorActivity : ComponentActivity() {
     }
 }
 
+const val ACTIVITY_RESULT_ICON_NAME = "icon"
+
 @OptIn(
     ExperimentalMaterial3Api::class
 )
@@ -174,7 +176,7 @@ fun GridItem(icon: ImageVector, activity: Activity) {
     Card(backgroundColor = MaterialTheme.colorScheme.surfaceVariant, onClick = {
         activity.intent
         val intent = Intent()
-        intent.putExtra("icon", icon.name)
+        intent.putExtra(ACTIVITY_RESULT_ICON_NAME, icon.name)
         activity.setResult(Activity.RESULT_OK, intent)
         activity.finish()
     }) {
@@ -212,7 +214,7 @@ fun GridItem(icon: ImageVector, activity: Activity) {
     }
 }
 
-public fun getIcon(
+fun getIcon(
     context: Context,
     iconName: String?,
     iconsStyle: Any?
@@ -228,13 +230,13 @@ public fun getIcon(
     return getFun.invoke(null, iconsStyle) as ImageVector
 }
 
-public class IconName(result: ActivityResult?) {
+class IconName(result: ActivityResult?) {
     val iconName: String
     var iconStyle: Any = Icons.Filled
 
     init {
         val data: Intent? = result?.data
-        val name = data?.getStringExtra("icon").toString()
+        val name = data?.getStringExtra(ACTIVITY_RESULT_ICON_NAME).toString()
         iconName = name.split(".")[1]
         when (name.split(".")[0]) {
             "Filled" -> iconStyle = Icons.Filled
