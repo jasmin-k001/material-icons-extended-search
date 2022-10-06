@@ -1,4 +1,4 @@
-package material.icons
+package io.github.husseinfo.maticonsearch
 
 import android.app.Application
 import android.content.Context

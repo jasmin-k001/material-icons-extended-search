@@ -1,4 +1,4 @@
-package material.icons
+package io.github.husseinfo.maticonsearch
 
 import android.app.Activity
 import android.content.Context
@@ -34,7 +34,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import material.icons.ui.theme.MaterialIconsTheme
 
 class MaterialIconSelectorActivity : ComponentActivity() {
 
@@ -48,7 +47,7 @@ class MaterialIconSelectorActivity : ComponentActivity() {
             val query by viewModel.query.collectAsState()
             val searchFilters = viewModel.iconStyles
 
-            MaterialIconsTheme {
+            MaterialTheme {
                 IconsList(icons, query, viewModel::search, searchFilters, viewModel::filter, this)
             }
         }

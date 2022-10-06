@@ -14,6 +14,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
+import io.github.husseinfo.maticonsearch.IconName
+import io.github.husseinfo.maticonsearch.MaterialIconSelectorActivity
+import io.github.husseinfo.maticonsearch.getIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
@@ -32,7 +35,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         window.decorView.findViewById(android.R.id.content),
                         iconName.iconName, Snackbar.LENGTH_SHORT
                     ).show()
-
 
                     findViewById<ComposeView>(R.id.compose_view).setContent {
                         MaterialTheme {
