@@ -18,12 +18,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
-    private var _binding: MainActivity? = null
-
-    // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -31,13 +25,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         val resultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val data: Intent? = result.data
-                    val name = data?.getStringExtra("icon").toString()
-                    val iconStyle = name.split(".")[0].lowercase()
-                    val iconName = name.split(".")[1]
+
+                    val iconName = IconName(result)
+
                     Snackbar.make(
                         window.decorView.findViewById(android.R.id.content),
-                        name, Snackbar.LENGTH_SHORT
+                        iconName.iconName, Snackbar.LENGTH_SHORT
                     ).show()
 
 
@@ -48,10 +41,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                     modifier = Modifier.size(40.dp),
                                     imageVector = getIcon(
                                         baseContext,
-                                        iconName,
-                                        iconStyle
+                                        iconName.iconName,
+                                        iconName.iconStyle
                                     ),
-                                    contentDescription = name
+                                    contentDescription = iconName.iconName
                                 )
                             }
                         }

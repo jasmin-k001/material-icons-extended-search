@@ -100,19 +100,3 @@ suspend fun queryIcons(
         }
         icons
     }
-
-fun getIcon(
-    context: Context,
-    iconName: String?,
-    iconsStyle: String?
-): ImageVector {
-    var iconsStyleOrFilled = iconsStyle
-    if (iconsStyleOrFilled == null)
-        iconsStyleOrFilled = Icons.Filled.toString()
-
-    val className =
-        context.classLoader.loadClass("androidx.compose.material.icons.${iconsStyleOrFilled.javaClass.simpleName.lowercase()}.${iconName}Kt")
-    val methods = className.declaredMethods
-    val getFun = methods.first()
-    return getFun.invoke(null, iconsStyle) as ImageVector
-}

@@ -1,10 +1,12 @@
 package material.icons
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -206,6 +208,39 @@ fun GridItem(icon: ImageVector, activity: Activity) {
                     }
                 }
             )
+        }
+    }
+}
+
+public fun getIcon(
+    context: Context,
+    iconName: String?,
+    iconsStyle: Any?
+): ImageVector {
+    var iconsStyleOrFilled = iconsStyle
+    if (iconsStyleOrFilled == null)
+        iconsStyleOrFilled = Icons.Filled
+
+    val className =
+        context.classLoader.loadClass("androidx.compose.material.icons.${iconsStyleOrFilled.javaClass.simpleName.lowercase()}.${iconName}Kt")
+    val methods = className.declaredMethods
+    val getFun = methods.first()
+    return getFun.invoke(null, iconsStyle) as ImageVector
+}
+
+public class IconName(result: ActivityResult?) {
+    val iconName: String
+    var iconStyle: Any = Icons.Filled
+
+    init {
+        val data: Intent? = result?.data
+        val name = data?.getStringExtra("icon").toString()
+        iconName = name.split(".")[1]
+        when (name.split(".")[0]) {
+            "Filled" -> iconStyle = Icons.Filled
+            "Outlined" -> iconStyle = Icons.Outlined
+            "TwoTone" -> iconStyle = Icons.TwoTone
+            "Rounded" -> iconStyle = Icons.Rounded
         }
     }
 }
