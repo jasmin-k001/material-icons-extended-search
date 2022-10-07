@@ -45,7 +45,7 @@ composeOptions {
 }
 ```
 
-### 2- View
+### 3- View
 
 Add a compose view to your XML layout:
 
@@ -55,7 +55,7 @@ Add a compose view to your XML layout:
     android:layout_height="30dp" />
 ```
 
-### 3- Activity
+### 4- Activity
 
 #### Register launcher and response handler
 
