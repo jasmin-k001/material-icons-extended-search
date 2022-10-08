@@ -72,19 +72,15 @@ val resultLauncher =
             ).show()
 
             icon.setContent {
-                MaterialTheme {
-                    Surface {
-                        Icon(
-                            modifier = Modifier.size(40.dp),
-                            imageVector = getIcon(
-                                baseContext,
-                                iconName.iconName,
-                                iconName.iconStyle
-                            ),
-                            contentDescription = iconName.iconName
-                        )
-                    }
-                }
+		Icon(
+                    modifier = Modifier.size(40.dp),
+                    imageVector = getIcon(
+                        baseContext,
+                        iconName.iconName,
+                        iconName.iconStyle
+                    ),
+                    contentDescription = iconName.iconName
+                )
             }
         }
     }
