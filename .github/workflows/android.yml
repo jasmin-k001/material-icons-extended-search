@@ -22,14 +22,14 @@ jobs:
       - name: Build APK
         run: bash ./gradlew assembleDebug --stacktrace
       - name: Upload APK
-          uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
           with:
             name: apk
             path: app/build/outputs/apk/debug/app-debug.apk
       - name: Build AAR
         run: bash ./gradlew build :maticonsearch:publishToMavenLocal
       - name: Upload AAR
-          uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
           with:
             name: aar
             path: maticonsearch/build/outputs/aar/maticonsearch-debug
