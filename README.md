@@ -65,7 +65,7 @@ val resultLauncher =
     registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
 
-            val iconName = IconName(result)
+            val icon = getIconByName(this, result)
 
             Snackbar.make(
                 window.decorView.findViewById(android.R.id.content),
@@ -73,14 +73,10 @@ val resultLauncher =
             ).show()
 
             icon.setContent {
-		Icon(
+                Icon(
                     modifier = Modifier.size(40.dp),
-                    imageVector = getIcon(
-                        baseContext,
-                        iconName.iconName,
-                        iconName.iconStyle
-                    ),
-                    contentDescription = iconName.iconName
+                    imageVector = icon,
+                    contentDescription = icon.name
                 )
             }
         }

@@ -1,0 +1,74 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - '*'
+
+jobs:
+  artifacts:
+    name: Generate APK and AAR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Build APK
+        run: bash ./gradlew assembleDebug --stacktrace
+      - name: Build AAR
+        run: bash ./gradlew build :maticonsearch:publishToMavenLocal
+      - name: Upload APK and AAR
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifacts
+          path: |
+          app/build/outputs/apk/debug/app-debug.apk
+          maticonsearch/build/outputs/aar/maticonsearch-debug
+  release:
+    name: Release APK and AAR
+    needs: artifacts
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK from build
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts
+      - name: Download AAR from build
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+      - name: Upload APK
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/app-debug.apk
+          asset_name: MatIconSearch.apk
+          asset_content_type: application/zip
+      - name: Upload AAR
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/maticonsearch-debug.aar
+          asset_name: maticonsearch.aar
+          asset_content_type: application/zip

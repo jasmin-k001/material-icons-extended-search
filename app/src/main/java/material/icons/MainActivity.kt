@@ -14,9 +14,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
-import io.github.husseinfo.maticonsearch.IconName
 import io.github.husseinfo.maticonsearch.MaterialIconSelectorActivity
-import io.github.husseinfo.maticonsearch.getIcon
+import io.github.husseinfo.maticonsearch.getIconByName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
@@ -29,11 +28,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
 
-                    val iconName = IconName(result)
+                    val icon = getIconByName(this, result)
 
                     Snackbar.make(
                         window.decorView.findViewById(android.R.id.content),
-                        iconName.iconName, Snackbar.LENGTH_SHORT
+                        icon.name, Snackbar.LENGTH_SHORT
                     ).show()
 
                     findViewById<ComposeView>(R.id.compose_view).setContent {
@@ -41,12 +40,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             Surface {
                                 Icon(
                                     modifier = Modifier.size(40.dp),
-                                    imageVector = getIcon(
-                                        baseContext,
-                                        iconName.iconName,
-                                        iconName.iconStyle
-                                    ),
-                                    contentDescription = iconName.iconName
+                                    imageVector = icon,
+                                    contentDescription = icon.name
                                 )
                             }
                         }

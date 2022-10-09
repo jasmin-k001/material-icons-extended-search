@@ -229,19 +229,20 @@ fun getIcon(
     return getFun.invoke(null, iconsStyle) as ImageVector
 }
 
-class IconName(result: ActivityResult?) {
-    val iconName: String
-    var iconStyle: Any = Icons.Filled
-
-    init {
-        val data: Intent? = result?.data
-        val name = data?.getStringExtra(ACTIVITY_RESULT_ICON_NAME).toString()
-        iconName = name.split(".")[1]
-        when (name.split(".")[0]) {
-            "Filled" -> iconStyle = Icons.Filled
-            "Outlined" -> iconStyle = Icons.Outlined
-            "TwoTone" -> iconStyle = Icons.TwoTone
-            "Rounded" -> iconStyle = Icons.Rounded
-        }
+fun getIconByName(context: Context, name: String): ImageVector {
+    val iconName = name.split(".")[1]
+    val iconStyle: Any = when (name.split(".")[0]) {
+        "Filled" -> Icons.Filled
+        "Outlined" -> Icons.Outlined
+        "TwoTone" -> Icons.TwoTone
+        "Rounded" -> Icons.Rounded
+        else -> Icons.Filled
     }
+    return getIcon(context, iconName, iconStyle)
+}
+
+fun getIconByName(context: Context, result: ActivityResult?): ImageVector {
+    val data: Intent? = result?.data
+    val name = data?.getStringExtra(ACTIVITY_RESULT_ICON_NAME).toString()
+    return getIconByName(context, name)
 }
