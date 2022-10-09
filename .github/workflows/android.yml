@@ -28,8 +28,8 @@ jobs:
         with:
           name: artifacts
           path: |
-          app/build/outputs/apk/debug/app-debug.apk
-          maticonsearch/build/outputs/aar/maticonsearch-debug
+            app/build/outputs/apk/debug/app-debug.apk
+            maticonsearch/build/outputs/aar/maticonsearch-debug
   release:
     name: Release APK and AAR
     needs: artifacts
