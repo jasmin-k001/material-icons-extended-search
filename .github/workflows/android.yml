@@ -19,10 +19,8 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: gradle
-      - name: Build APK
-        run: bash ./gradlew assembleDebug --stacktrace
-      - name: Build AAR
-        run: bash ./gradlew build :maticonsearch:publishToMavenLocal
+      - name: Build APK and AAR
+        run: bash ./gradlew assembleDebug --stacktrace && bash ./gradlew build :maticonsearch:publishToMavenLocal
       - name: Upload APK and AAR
         uses: actions/upload-artifact@v1
         with:
