@@ -1,3 +1,4 @@
+![Android CI](https://github.com/Husseinfo/material-icons-extended-search/actions/workflows/android.yml/badge.svg)
 [![](https://jitci.com/gh/Husseinfo/material-icons-extended-search/svg)](https://jitci.com/gh/Husseinfo/material-icons-extended-search)
 
 # Material Icons Extended Search
@@ -20,7 +21,7 @@ implementation "androidx.compose.compiler:compiler:$compose_version"
 implementation "androidx.compose.material3:material3:1.0.0-rc01"
 implementation "androidx.compose.ui:ui:1.3.0-rc01"
 debugImplementation "androidx.compose.ui:ui-tooling:1.2.1"
-implementation 'com.github.Husseinfo:material-icons-extended-search:1.0.0'
+implementation 'com.github.Husseinfo:material-icons-extended-search:1.0.1'
 ```
 
 ### 2- Gradle (project level build.gradle)
