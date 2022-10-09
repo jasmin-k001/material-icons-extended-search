@@ -19,15 +19,20 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: gradle
-      - name: Build APK and AAR
-        run: bash ./gradlew assembleDebug --stacktrace && bash ./gradlew build :maticonsearch:publishToMavenLocal
-      - name: Upload APK and AAR
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts
-          path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            maticonsearch/build/outputs/aar/maticonsearch-debug
+      - name: Build APK
+        run: bash ./gradlew assembleDebug --stacktrace
+      - name: Upload APK
+          uses: actions/upload-artifact@v3
+          with:
+            name: apk
+            path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Build AAR
+        run: bash ./gradlew build :maticonsearch:publishToMavenLocal
+      - name: Upload AAR
+          uses: actions/upload-artifact@v3
+          with:
+            name: aar
+            path: maticonsearch/build/outputs/aar/maticonsearch-debug
   release:
     name: Release APK and AAR
     needs: artifacts
@@ -37,11 +42,11 @@ jobs:
       - name: Download APK from build
         uses: actions/download-artifact@v1
         with:
-          name: artifacts
+          name: apk
       - name: Download AAR from build
         uses: actions/download-artifact@v1
         with:
-          name: artifacts
+          name: aar
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -57,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/app-debug.apk
+          asset_path: apk/app-debug.apk
           asset_name: MatIconSearch.apk
           asset_content_type: application/zip
       - name: Upload AAR
@@ -67,6 +72,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/maticonsearch-debug.aar
+          asset_path: aar/maticonsearch-debug.aar
           asset_name: maticonsearch.aar
           asset_content_type: application/zip
