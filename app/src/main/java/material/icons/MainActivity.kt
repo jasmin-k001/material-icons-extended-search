@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -16,6 +17,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import io.github.husseinfo.maticonsearch.MaterialIconSelectorActivity
 import io.github.husseinfo.maticonsearch.getIconByName
+import io.github.husseinfo.maticonsearch.getThemeColorScheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
@@ -36,7 +38,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     ).show()
 
                     findViewById<ComposeView>(R.id.compose_view).setContent {
-                        MaterialTheme {
+                        MaterialTheme(colorScheme = getThemeColorScheme(isSystemInDarkTheme())) {
                             Surface {
                                 Icon(
                                     modifier = Modifier.size(40.dp),

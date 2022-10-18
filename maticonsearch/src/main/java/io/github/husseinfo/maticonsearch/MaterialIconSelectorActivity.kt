@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -47,8 +48,15 @@ class MaterialIconSelectorActivity : ComponentActivity() {
             val query by viewModel.query.collectAsState()
             val searchFilters = viewModel.iconStyles
 
-            MaterialTheme {
-                IconsList(icons, query, viewModel::search, searchFilters, viewModel::filter, this)
+            MaterialTheme(colorScheme = getThemeColorScheme(isSystemInDarkTheme())) {
+                IconsList(
+                    icons,
+                    query,
+                    viewModel::search,
+                    searchFilters,
+                    viewModel::filter,
+                    this
+                )
             }
         }
     }
@@ -158,6 +166,7 @@ fun FiltersMenu(
                         selected = selectedFilter.value == filter,
                         onClick = {
                             selectedFilter.value = filter
+                            onFilter(filter)
                             onFilter(filter)
                             showMenu = false
                         }
