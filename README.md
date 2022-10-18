@@ -73,12 +73,21 @@ val resultLauncher =
                 iconName.iconName, Snackbar.LENGTH_SHORT
             ).show()
 
-            icon.setContent {
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    imageVector = icon,
-                    contentDescription = icon.name
-                )
+            findViewById<ComposeView>(R.id.compose_view).setContent {
+                MaterialTheme(
+                    colorScheme = getAppColorScheme(
+                        this,
+                        isSystemInDarkTheme()
+                    )
+                ) {
+                    Surface {
+                        Icon(
+                            modifier = Modifier.size(40.dp),
+                            imageVector = icon,
+                            contentDescription = icon.name
+                        )
+                    }
+                }
             }
         }
     }
