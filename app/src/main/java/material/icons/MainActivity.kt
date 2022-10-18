@@ -1,216 +1,63 @@
 package material.icons
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.FilterList
-import androidx.compose.material.icons.twotone.Search
-import androidx.compose.material.icons.twotone.Wifi
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
-import material.icons.ui.theme.MaterialIconsTheme
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
+import io.github.husseinfo.maticonsearch.MaterialIconSelectorActivity
+import io.github.husseinfo.maticonsearch.getAppColorScheme
+import io.github.husseinfo.maticonsearch.getIconByName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 
-class MainActivity : ComponentActivity() {
-
-    private val viewModel by viewModels<MainViewModel>()
-
+class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        setContent {
-            val icons by viewModel.icons.collectAsState()
-            val query by viewModel.query.collectAsState()
-            val searchFilters = viewModel.iconStyles
+        val resultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
 
-            MaterialIconsTheme {
-                IconsList(icons, query, viewModel::search, searchFilters, viewModel::filter)
-            }
-        }
-    }
+                    val icon = getIconByName(this, result)
 
-    companion object {
-        val TAG = MainActivity::class.simpleName
-    }
-}
+                    Snackbar.make(
+                        window.decorView.findViewById(android.R.id.content),
+                        icon.name, Snackbar.LENGTH_SHORT
+                    ).show()
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class
-)
-@Composable
-fun IconsList(
-    listOfIcons: List<ImageVector>,
-    query: String?,
-    onSearch: (String?) -> Unit,
-    searchFilters: List<Any>,
-    onFilter: (Any) -> Unit
-) {
-    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
-
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { SearchTextField(query, onSearch) },
-                navigationIcon = {
-                    IconButton(onClick = { onSearch("") }) {
-                        Icon(
-                            imageVector = Icons.TwoTone.Search,
-                            contentDescription = "Search"
-                        )
-                    }
-                },
-                actions = { FiltersMenu(searchFilters = searchFilters, onFilter = onFilter) },
-                scrollBehavior = scrollBehavior,
-            )
-        },
-        content = { innerPadding ->
-            LazyVerticalGrid(
-                modifier = Modifier.padding(7.dp, 0.dp),
-                contentPadding = innerPadding,
-                cells = GridCells.Adaptive(123.dp),
-                verticalArrangement = Arrangement.spacedBy(9.dp),
-                horizontalArrangement = Arrangement.spacedBy(9.dp)
-            ) {
-                items(listOfIcons) {
-                    GridItem(it)
-                }
-            }
-        }
-    )
-}
-
-@Composable
-fun SearchTextField(
-    query: String?,
-    onSearch: (String?) -> Unit,
-) {
-    val focusRequester = remember { FocusRequester() }
-
-    BasicTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .focusRequester(focusRequester),
-        value = query ?: "",
-        onValueChange = onSearch,
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-        textStyle = LocalTextStyle.current.copy(
-            color = MaterialTheme.colorScheme.onSurface
-        )
-    )
-    LaunchedEffect(Unit) {
-        if (query.isNullOrEmpty()) {
-            focusRequester.requestFocus()
-        }
-    }
-}
-
-@Composable
-fun FiltersMenu(
-    searchFilters: List<Any>,
-    onFilter: (Any) -> Unit
-) {
-    var showMenu by remember { mutableStateOf(false) }
-    val selectedFilter = remember { mutableStateOf(searchFilters[0]) }
-
-    IconButton(onClick = { showMenu = !showMenu }) {
-        Icon(
-            imageVector = Icons.TwoTone.FilterList,
-            contentDescription = "Filter"
-        )
-    }
-    DropdownMenu(expanded = showMenu,
-        onDismissRequest = { showMenu = false }
-    ) {
-        searchFilters.forEach { filter ->
-            DropdownMenuItem(onClick = {
-                selectedFilter.value = filter
-                onFilter(filter)
-                showMenu = false
-            }) {
-                Row {
-                    RadioButton(
-                        selected = selectedFilter.value == filter,
-                        onClick = {
-                            selectedFilter.value = filter
-                            onFilter(filter)
-                            showMenu = false
+                    findViewById<ComposeView>(R.id.compose_view).setContent {
+                        MaterialTheme(
+                            colorScheme = getAppColorScheme(
+                                this,
+                                isSystemInDarkTheme()
+                            )
+                        ) {
+                            Surface {
+                                Icon(
+                                    modifier = Modifier.size(40.dp),
+                                    imageVector = icon,
+                                    contentDescription = icon.name
+                                )
+                            }
                         }
-                    )
-                }
-                Text(text = filter.javaClass.simpleName, modifier = Modifier.padding(start = 7.dp))
-            }
-        }
-    }
-}
-
-@Composable
-fun GridItem(icon: ImageVector) {
-    Card(backgroundColor = MaterialTheme.colorScheme.surfaceVariant) {
-        Column(
-            modifier = Modifier.height(99.dp).padding(5.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            var multiplier by remember { mutableStateOf(1f) }
-            val iconName = icon.name.replaceBefore(".", "").replace(".", "")
-
-            Icon(
-                modifier = Modifier.size(40.dp),
-                imageVector = icon,
-                contentDescription = iconName
-            )
-            Spacer(modifier = Modifier.height(7.dp))
-            Text(
-                text = iconName,
-                maxLines = 1,
-                textAlign = TextAlign.Center,
-                overflow = TextOverflow.Visible,
-                style = LocalTextStyle.current.copy(
-                    fontSize = LocalTextStyle.current.fontSize * multiplier
-                ),
-                onTextLayout = {
-                    if (it.hasVisualOverflow) {
-                        multiplier *= 0.99f
                     }
                 }
-            )
-        }
-    }
-}
+            }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MaterialIconsTheme {
-        IconsList(listOf(Icons.TwoTone.Wifi), "", {}, listOf(), {})
+        findViewById<MaterialButton>(R.id.btn_select_icon).setOnClickListener {
+            resultLauncher.launch(Intent(this, MaterialIconSelectorActivity::class.java))
+        }
     }
 }
