@@ -48,7 +48,7 @@ class MaterialIconSelectorActivity : ComponentActivity() {
             val query by viewModel.query.collectAsState()
             val searchFilters = viewModel.iconStyles
 
-            MaterialTheme(colorScheme = getThemeColorScheme(isSystemInDarkTheme())) {
+            MaterialTheme(colorScheme = getAppColorScheme(this, isSystemInDarkTheme())) {
                 IconsList(
                     icons,
                     query,
